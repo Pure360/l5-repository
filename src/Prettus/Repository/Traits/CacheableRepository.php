@@ -126,7 +126,7 @@ trait CacheableRepository
         $key = sprintf('%s@%s-%s', get_called_class(), $method, md5($args . $criteria . $request->fullUrl()));
 
 		if (!config("repository.cache.clean.redis", false)) {
-		//The implimentation of CacheKeys uses a local file and is slow so accelerate for redis
+			//The implimentation of CacheKeys uses a local file and is slow so accelerate for redis
         	CacheKeys::putKey(get_called_class(), $key);
         }
 
