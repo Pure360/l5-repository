@@ -409,6 +409,23 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Find data by a field being null
+     *
+     * @param       $field
+     * @param array $columns
+     *
+     * @return mixed
+     */
+    public function findWhereNull($field, $columns = ['*'])
+    {
+        $this->applyCriteria();
+        $model = $this->model->whereNull($field)->get($columns);
+        $this->resetModel();
+
+        return $this->parserResult($model);
+    }
+
+    /**
      * Find data by multiple values in one field
      *
      * @param       $field
@@ -442,6 +459,47 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         $this->resetModel();
 
         return $this->parserResult($model);
+    }
+
+    /**
+     * Return a new default model
+     *
+     * @param array $overrideDefaults an array to use to override any defaults that are set in the class itself
+     * @return mixed
+     */
+    public function newDefault(array $overrideDefaults=array())
+    {
+        $defaults = $this->setDefaults();
+
+        if (is_array($defaults))
+        {
+            if(is_array($overrideDefaults))
+            {
+                $defaults = array_merge($defaults, $overrideDefaults);
+            }
+
+        } elseif(is_array($overrideDefaults))
+        {
+            $defaults = $overrideDefaults;
+
+        } else
+        {
+            $defaults = [];
+        }
+        $model = new $this->model($defaults);
+        $this->resetModel();
+
+        return $this->parserResult($model);
+    }
+
+    /**
+     * Set the defaults for a new model
+     *
+     * @return array
+     */
+    public function setDefaults()
+    {
+        return [];
     }
 
     /**

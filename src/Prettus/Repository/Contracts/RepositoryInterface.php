@@ -79,6 +79,16 @@ interface RepositoryInterface
     public function findWhere(array $where, $columns = ['*']);
 
     /**
+     * Find data by a field being null
+     *
+     * @param       $field
+     * @param array $columns
+     *
+     * @return mixed
+     */
+    public function findWhereNull($field, $columns = ['*']);
+
+    /**
      * Find data by multiple values in one field
      *
      * @param       $field
@@ -99,6 +109,21 @@ interface RepositoryInterface
      * @return mixed
      */
     public function findWhereNotIn($field, array $values, $columns = ['*']);
+
+    /**
+     * Return a new default model
+     *
+     * @param array $overrideDefaults an array to use to override any defaults that are set in the class itself
+     * @return mixed
+     */
+    public function newDefault(array $overrideDefaults=array());
+
+    /**
+     * Set the defaults for a new model
+     *
+     * @return array
+     */
+    public function setDefaults();
 
     /**
      * Save a new entity in repository
