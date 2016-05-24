@@ -73,7 +73,8 @@ class CleanCacheRepository
                     } else {
 						$group = str_replace('\\', '\\\\', get_class($this->repository));
     	                $redisClient = $this->cache->__call('getRedis', []);
-        	            $keys = $redisClient->keys('laravel:' . $group . '*');
+    	                $prefix = config("cache.prefix", "laravel")
+        	            $keys = $redisClient->keys($prefix.':' . $group . '*');
             	        $deleted = $redisClient->del($keys);
             	    }
                 }
