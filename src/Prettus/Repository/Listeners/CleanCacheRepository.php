@@ -61,7 +61,7 @@ class CleanCacheRepository
                 if (config("repository.cache.clean.on.{$this->action}", true)) {
 
                 	if (!config("repository.cache.clean.redis", false)) {
-						//The implimentation of CacheKeys uses a local file and is slow so accelerate for redis
+						//The implementation of CacheKeys uses a local file and is slow so accelerate for redis
 	                    $cacheKeys = CacheKeys::getKeys(get_class($this->repository));
 
 	                    if (is_array($cacheKeys)) {
@@ -73,8 +73,10 @@ class CleanCacheRepository
 						$group = str_replace('\\', '\\\\', get_class($this->repository));
     	                $redisClient = $this->cache->__call('getRedis', []);
     	                $prefix = config("cache.prefix", "laravel");
-        	            $keys = $redisClient->keys($prefix.':' . $group . '*');
-            	        $deleted = $redisClient->del($keys);
+                        $connection = config("cache.stores.redis.connection", "default");
+                        $redis = $redisClient->connection($connection);
+                        $keys = call_user_func_array([$redis, 'keys'], [$prefix.':' . $group . '*']);
+                        $deleted = call_user_func_array([$redis, 'del'], $keys);
             	    }
                 }
             }
