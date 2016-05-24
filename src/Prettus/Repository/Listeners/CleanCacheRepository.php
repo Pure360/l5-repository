@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Events\RepositoryEventBase;
-use Prettus\Repository\Helpers\CacheKeys;
 use Predis\Connection\Aggregate\SentinelReplication;
 
 /**
@@ -73,7 +72,7 @@ class CleanCacheRepository
                     } else {
 						$group = str_replace('\\', '\\\\', get_class($this->repository));
     	                $redisClient = $this->cache->__call('getRedis', []);
-    	                $prefix = config("cache.prefix", "laravel")
+    	                $prefix = config("cache.prefix", "laravel");
         	            $keys = $redisClient->keys($prefix.':' . $group . '*');
             	        $deleted = $redisClient->del($keys);
             	    }
