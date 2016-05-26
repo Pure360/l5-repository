@@ -885,4 +885,22 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
 
         return $result;
     }
+
+    /**
+     * Get the ID to use for the cache key. This method can be overridden if the class shortname is not appropriate
+     * for some reason
+     *
+     * @return string   The ID for the cache key, defaulted to the called_class
+     */
+    public function getCacheId()
+    {
+        $returnVal = get_called_class();
+        // remove the full qualification to only have the shortname
+        $lastSlash = strrpos($returnVal, '\\');
+        if ($lastSlash !== false) {
+            $returnVal = substr($returnVal, $lastSlash + 1);
+        }
+        return $returnVal;
+    }
+
 }
