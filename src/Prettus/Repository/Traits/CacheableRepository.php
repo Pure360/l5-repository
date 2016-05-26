@@ -123,10 +123,9 @@ trait CacheableRepository
         $request = app('Illuminate\Http\Request');
         $args = serialize($args);
         $criteria = $this->serializeCriteria();
-        $key = sprintf('%s@%s-%s', get_called_class(), $method, md5($args . $criteria . $request->fullUrl()));
-
+        $key = sprintf('%s@%s-%s', $this->getCacheId(), $method, md5($args . $criteria . $request->fullUrl()));
 		if (!config("repository.cache.clean.redis", false)) {
-			//The implimentation of CacheKeys uses a local file and is slow so accelerate for redis
+			//The implementation of CacheKeys uses a local file and is slow so accelerate for redis
         	CacheKeys::putKey(get_called_class(), $key);
         }
 
@@ -379,5 +378,22 @@ trait CacheableRepository
         });
 
         return $value;
+    }
+
+    /**
+     * Get the ID to use for the cache key. This method can be overridden if the class shortname is not appropriate
+     * for some reason
+     *
+     * @return string   The ID for the cache key, defaulted to the called_class
+     */
+    public function getCacheId()
+    {
+        $returnVal = get_called_class();
+        // remove the full qualification to only have the shortname
+        $lastSlash = strrpos($returnVal, '\\');
+        if ($lastSlash !== false) {
+            $returnVal = substr($returnVal, $lastSlash + 1);
+        }
+        return $returnVal;
     }
 }

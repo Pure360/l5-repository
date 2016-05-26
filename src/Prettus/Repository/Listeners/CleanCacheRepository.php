@@ -70,13 +70,13 @@ class CleanCacheRepository
             	            }
                 	    }
                     } else {
-						$group = str_replace('\\', '\\\\', get_class($this->repository));
+						$cacheId = $this->repository->getCacheId();
     	                $redisClient = $this->cache->__call('getRedis', []);
     	                $prefix = config("cache.prefix", "laravel");
                         $connection = config("cache.stores.redis.connection", "default");
                         $redis = $redisClient->connection($connection);
-                        $keys = call_user_func_array([$redis, 'keys'], [$prefix.':' . $group . '*']);
-                        $deleted = call_user_func_array([$redis, 'del'], $keys);
+                        $keys = call_user_func_array([$redis, 'keys'], [$prefix.':' . $cacheId . '*']);
+                        $deleteCount = call_user_func_array([$redis, 'del'], $keys);
             	    }
                 }
             }
