@@ -355,7 +355,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     {
         $this->applyCriteria();
         $this->applyScope();
-        $model = $this->model->findOrFail($id, $columns);
+        $model = $this->model->find($id, $columns);
         $this->resetModel();
 
         return $this->parserResult($model);
@@ -465,7 +465,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      * Find data using a raw SQL string and optional search parameters
      *
      * @param       $searchSql      The SQL string
-     * @param array $searchValues   Values that can be used as parameters with the seachSQL as a prepared statement
+     * @param array $searchValues   Values that can be used as parameters with the searchSQL as a prepared statement
      *
      * @return mixed
      */

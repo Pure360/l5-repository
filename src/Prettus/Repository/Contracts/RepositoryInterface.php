@@ -114,7 +114,7 @@ interface RepositoryInterface
      * Find data using a raw SQL string and optional search parameters
      *
      * @param       $searchSql      The SQL string
-     * @param array $searchValues   Values that can be used as parameters with the seachSQL as a prepared statement
+     * @param array $searchValues   Values that can be used as parameters with the searchSQL as a prepared statement
      *
      * @return mixed
      */
