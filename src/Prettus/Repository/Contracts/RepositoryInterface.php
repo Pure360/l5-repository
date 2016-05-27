@@ -111,6 +111,16 @@ interface RepositoryInterface
     public function findWhereNotIn($field, array $values, $columns = ['*']);
 
     /**
+     * Find data using a raw SQL string and optional search parameters
+     *
+     * @param       $searchSql      The SQL string
+     * @param array $searchValues   Values that can be used as parameters with the seachSQL as a prepared statement
+     *
+     * @return mixed
+     */
+    public function findSQL($searchSql='', array $searchValues=array());
+
+    /**
      * Return a new default model
      *
      * @param array $overrideDefaults an array to use to override any defaults that are set in the class itself
@@ -242,4 +252,12 @@ interface RepositoryInterface
      * @return $this
      */
     public function skipPresenter($status = true);
+
+    /**
+     * Get the ID to use for the cache key. This method can be overridden if the class shortname is not appropriate
+     * for some reason
+     *
+     * @return string   The ID for the cache key, defaulted to the called_class
+     */
+    public function getCacheId();
 }

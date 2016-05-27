@@ -462,6 +462,31 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Find data using a raw SQL string and optional search parameters
+     *
+     * @param       $searchSql      The SQL string
+     * @param array $searchValues   Values that can be used as parameters with the seachSQL as a prepared statement
+     *
+     * @return mixed
+     */
+    public function findSQL($searchSql='', array $searchValues=array())
+    {
+        $modelClass = get_class($this->model);
+        //If the SQL fails then just return a blank result
+        try {
+            $rawObjects = $this->model->getConnection()->select($searchSql, $searchValues);
+            $model = $modelClass::hydrate($rawObjects);
+        } catch (\Exception $exception) {
+            $rawObjects = array();
+            $model = $modelClass::hydrate($rawObjects);
+        }
+
+        $this->resetModel();
+
+        return $this->parserResult($model);
+    }
+
+    /**
      * Return a new default model
      *
      * @param array $overrideDefaults an array to use to override any defaults that are set in the class itself

@@ -359,6 +359,32 @@ trait CacheableRepository
     }
 
     /**
+     * Find data using a raw SQL string and optional search parameters
+     *
+     * @param       $searchSql      The SQL string
+     * @param array $searchValues   Values that can be used as parameters with the seachSQL as a prepared statement
+     *
+     * @return mixed
+     */
+    public function findSQL($searchSql='', array $searchValues=array())
+    {
+        if(!$this->allowedCache('findSQL') || $this->isSkippedCache())
+        {
+            return parent::findSQL($searchSql, $searchValues);
+        }
+
+        $key = $this->getCacheKey('findSQL', func_get_args());
+        $minutes = $this->getCacheMinutes();
+        $value = $this->getCacheRepository()->remember($key, $minutes, function() use ($searchSql, $searchValues)
+        {
+            return parent::findSQL($searchSql, $searchValues);
+        });
+
+        return $value;
+
+    }
+
+    /**
      * Find data by Criteria
      *
      * @param CriteriaInterface $criteria
