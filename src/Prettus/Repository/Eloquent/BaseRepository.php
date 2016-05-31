@@ -17,6 +17,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Events\RepositoryEntityCreated;
 use Prettus\Repository\Events\RepositoryEntityDeleted;
 use Prettus\Repository\Events\RepositoryEntityUpdated;
+use Prettus\Repository\Events\RepositoryFlush;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -465,7 +466,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
      * Find data using a raw SQL string and optional search parameters
      *
      * @param       $searchSql      The SQL string
-     * @param array $searchValues   Values that can be used as parameters with the searchSQL as a prepared statement
+     * @param array $searchValues   Values that can be used as parameters with the seachSQL as a prepared statement
      *
      * @return mixed
      */
@@ -655,6 +656,17 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Flush the repository
+     *
+     * @return int
+     */
+    public function flush()
+    {
+        event(new RepositoryFlush($this, $this->model));
+        return 0;
+    }
+
+        /**
      * Check if entity has relation
      *
      * @param string $relation

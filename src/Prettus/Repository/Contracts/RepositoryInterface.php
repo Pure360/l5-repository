@@ -176,6 +176,13 @@ interface RepositoryInterface
     public function delete($id);
 
     /**
+     * Flush the repository
+     *
+     * @return int
+     */
+    public function flush();
+
+    /**
      * Order collection by a given column
      *
      * @param string $column
