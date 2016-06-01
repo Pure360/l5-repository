@@ -155,6 +155,18 @@ interface RepositoryInterface
     public function update(array $attributes, $id);
 
     /**
+     * Update entities in repository by a where clause
+     *
+     * @throws ValidatorException
+     *
+     * @param array $attributes
+     * @param array $where
+     *
+     * @return mixed
+     */
+    public function updateWhere(array $attributes, array $where);
+
+    /**
      * Update or Create an entity in repository
      *
      * @throws ValidatorException

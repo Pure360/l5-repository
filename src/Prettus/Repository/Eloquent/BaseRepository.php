@@ -598,6 +598,50 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Update entities in repository by a where clause
+     *
+     * @throws ValidatorException
+     *
+     * @param array $attributes
+     * @param array $where
+     *
+     * @return mixed
+     */
+    public function updateWhere(array $attributes, array $where)
+    {
+        $tableName = $this->model->getTable();
+        $connection = $this->model->getConnectionName();
+        try {
+            $updated = DB::connection($connection)->table($tableName)->where(function ($query) use ($where){
+                foreach ($where as $clause) {
+                    if (count($clause) == 3) {
+                        $query->where($clause[0], $clause[1], $clause[2]);
+                    } elseif (count($clause) == 2) {
+                        $query->where($clause[0], '=', $clause[1]);
+                    }
+                }
+            })->update($attributes);
+        } catch (Exception $exception) {
+            // if we run into a problem, then we updated no records
+            $updated = 0;
+        }
+
+        $model = DB::connection($connection)->table($tableName)->where(function ($query) use ($where){
+            foreach ($where as $clause) {
+                if (count($clause) == 3) {
+                    $query->where($clause[0], $clause[1], $clause[2]);
+                } elseif (count($clause) == 2) {
+                    $query->where($clause[0], '=', $clause[1]);
+                }
+            }
+        })->first();
+
+        event(new RepositoryEntityUpdated($this, $this->model));
+
+        return $model;
+    }
+
+    /**
      * Update or Create an entity in repository
      *
      * @throws ValidatorException
@@ -687,7 +731,7 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
         return $deleted;
     }
 
-        /**
+    /**
      * Flush the repository
      *
      * @return int
