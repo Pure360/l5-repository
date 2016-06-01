@@ -176,6 +176,15 @@ interface RepositoryInterface
     public function delete($id);
 
     /**
+     * Delete entities in repository by where clause
+     *
+     * @param   array   $where  The where clause to use
+     *
+     * @return int
+     */
+    public function deleteWhere(array $where);
+
+    /**
      * Flush the repository
      *
      * @return int

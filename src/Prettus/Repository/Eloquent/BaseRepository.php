@@ -21,6 +21,7 @@ use Prettus\Repository\Events\RepositoryFlush;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\Exceptions\ValidatorException;
+use DB;
 
 /**
  * Class BaseRepository
@@ -656,6 +657,37 @@ abstract class BaseRepository implements RepositoryInterface, RepositoryCriteria
     }
 
     /**
+     * Delete entities in repository by where clause
+     *
+     * @param   array   $where  The where clause to use
+     *
+     * @return int
+     */
+    public function deleteWhere(array $where)
+    {
+        $tableName = $this->model->getTable();
+        $connection = $this->model->getConnectionName();
+        try {
+            $deleted = DB::connection($connection)->table($tableName)->where(function ($query) use ($where){
+                foreach ($where as $clause) {
+                    if (count($clause) == 3) {
+                        $query->where($clause[0], $clause[1], $clause[2]);
+                    } elseif (count($clause) == 2) {
+                        $query->where($clause[0], '=', $clause[1]);
+                    }
+                }
+            })->delete();
+        } catch (Exception $exception) {
+            // if we run into a problem, just return zero
+            $deleted = 0;
+        }
+
+        event(new RepositoryEntityDeleted($this, $this->model));
+
+        return $deleted;
+    }
+
+        /**
      * Flush the repository
      *
      * @return int
