@@ -76,7 +76,9 @@ class CleanCacheRepository
                         $connection = config("cache.stores.redis.connection", "default");
                         $redis = $redisClient->connection($connection);
                         $keys = call_user_func_array([$redis, 'keys'], [$prefix.':' . $cacheId . '*']);
-                        $deleteCount = call_user_func_array([$redis, 'del'], $keys);
+                        if (is_array($keys) && count($keys) > 0) {
+                        	$deleteCount = call_user_func_array([$redis, 'del'], $keys);
+                        }
             	    }
                 }
             }
