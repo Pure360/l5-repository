@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Events\RepositoryEventBase;
+use Prettus\Repository\Helpers\CacheKeys;
 use Predis\Connection\Aggregate\SentinelReplication;
 
 /**
